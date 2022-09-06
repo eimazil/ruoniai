@@ -370,3 +370,12 @@ input {
   padding: 10px;
   border: 2px dotted orangered;
 }
+
+.red-square {
+  border: 3px dotted crimson;
+  padding: 20px;
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
