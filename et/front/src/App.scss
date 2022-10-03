@@ -1,0 +1,51 @@
+@import "~bootstrap/scss/bootstrap";
+
+.modal {
+  display: block;
+  background-color: #0000005f;
+}
+
+.create-form {
+  margin-top: 24px;
+  border: solid 1px rgba(0, 0, 0, 0.176);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.suppliers {
+  margin-top: 20px;
+}
+
+.line-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.info-container {
+  display: flex;
+  gap: 10px;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+}
+
+.image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  svg {
+    fill: crimson;
+    width: 500px;
+    height: 500px;
+    transition: all 3s;
+  }
+}
+.home-consumer-list {
+  display: flex;
+  gap: 10px;
+}

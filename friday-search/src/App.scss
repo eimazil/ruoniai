@@ -1,0 +1,148 @@
+@import "~bootstrap/scss/bootstrap";
+
+body {
+  margin: 0;
+}
+
+.search-container {
+  background-color: #e41d27;
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-container {
+  background-color: #e94f56;
+  border: none;
+  width: 85%;
+  padding: 0 10px;
+  height: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+#svg-play {
+  fill: #f5f5f1;
+}
+
+.play-img {
+  width: 36px;
+  height: 36px;
+}
+
+.input-field {
+  background-color: #e94f56;
+  border: none;
+  width: 100%;
+  margin-left: 10px;
+  color: white;
+}
+
+.movies-list {
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  background-color: #f5f5f1;
+}
+
+.search-movie-row {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 48px;
+  cursor: pointer;
+}
+
+.btn-close {
+  cursor: pointer;
+}
+
+.search-movie-row:hover {
+  background-color: #e41d27;
+}
+
+.search-movie-row:hover .search-movie-body {
+  color: white;
+}
+
+.search-movie-title {
+  font-weight: bold;
+  word-spacing: 3px;
+}
+
+.search-movie-body {
+  color: #3d3c3c;
+  font-size: 12px;
+}
+
+.image-star {
+  fill: #fdc02f;
+  width: 36px;
+  height: 36px;
+}
+
+// MOVIE DESCRIPTION
+
+.movie-poster {
+  width: 250px;
+}
+
+.movie-description {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.description-movie-title {
+  margin-bottom: 0;
+}
+
+.description-main-container {
+  margin: 48px 48px 0 48px;
+  display: flex;
+  gap: 48px;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rating-descriptions {
+  display: flex;
+  flex-direction: column;
+}
+
+.rating-average {
+  font-weight: 600;
+}
+.rating-scale {
+  font-size: 12px;
+}
+
+.votes-amount {
+  color: #9c9b9bcf;
+  font-size: 12px;
+}
+
+.overview {
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.movie-language-container {
+  color: #6e6c6c;
+  font-size: 14px;
+  font-style: italic;
+  letter-spacing: 0.8px;
+}
+
+.movie-language {
+  font-size: 16px;
+  text-transform: uppercase;
+}
