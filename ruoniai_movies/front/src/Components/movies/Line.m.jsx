@@ -7,7 +7,17 @@ function Line({ movie }) {
   return (
     <div className="line-container">
       <div className="info-container">
+        <div>
+          {movie.image ? (
+            <div className="img-bin">
+              <img src={movie.image} alt="movie.title" />
+            </div>
+          ) : (
+            <span>No Image</span>
+          )}
+        </div>
         <span>{movie.title}</span>
+        <span>{movie.rating === null ? "No rating" : movie.rating}</span>
         <span>{movie.price} Eur</span>
         <span>{movie.cat_title}</span>
       </div>

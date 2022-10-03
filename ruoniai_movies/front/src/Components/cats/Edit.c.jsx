@@ -7,6 +7,8 @@ function Edit() {
   const { modalData, setModalData, setEditData } = useContext(Cats);
   const [title, setTitle] = useState("");
 
+  console.log(modalData);
+
   const save = () => {
     setEditData({
       title,
@@ -19,7 +21,7 @@ function Edit() {
     if (null === modalData) {
       return;
     }
-    setTitle(modalData.title);
+    setTitle(modalData.cat_title);
   }, [modalData]);
 
   if (modalData === null) {

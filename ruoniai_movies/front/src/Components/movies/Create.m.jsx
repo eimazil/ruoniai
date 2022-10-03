@@ -1,22 +1,34 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import Movies from "../../Contexts/Movies";
+import getBase64 from "../../Functions/getBase64";
 
 function Create() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [categorie, setCategorie] = useState("0");
+  const fileInput = useRef();
+  const [photoPrint, setPhotoPrint] = useState(null);
 
   const { setCreateData, categories } = useContext(Movies);
+
+  const doPhoto = () => {
+    getBase64(fileInput.current.files[0])
+      .then((photo) => setPhotoPrint(photo))
+      .catch((_) => {});
+  };
 
   const add = () => {
     setCreateData({
       title,
-      price,
+      price: parseInt(price),
       cat_id: parseFloat(categorie),
+      image: photoPrint,
     });
     setTitle("");
     setPrice("");
     setCategorie("0");
+    setPhotoPrint(null);
+    fileInput.current.value = null;
   };
 
   return (
@@ -55,6 +67,22 @@ function Create() {
           </option>
         ))}
       </select>
+      <div className="form-group">
+        <label>Choose file</label>
+        <input
+          ref={fileInput}
+          type="file"
+          className="form-control"
+          onChange={doPhoto}
+        />
+      </div>
+      <div className="mb-3">
+        {photoPrint ? (
+          <div className="img-bin">
+            <img src={photoPrint} alt="uploaded-img" />
+          </div>
+        ) : null}
+      </div>
       <button
         style={{ marginTop: "10px" }}
         onClick={add}

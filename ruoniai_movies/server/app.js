@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const port = 3003;
+app.use(express.json({ limit: "10mb" }));
 const cors = require("cors");
 app.use(cors());
 const mysql = require("mysql");
@@ -32,12 +33,12 @@ app.post("/server/cats", (req, res) => {
 
 app.post("/server/movies", (req, res) => {
   const sql = `
-    INSERT INTO movies (title, price, cat_id)
-    VALUES (?, ?, ?)
+    INSERT INTO movies (title, price, cat_id, image)
+    VALUES (?, ?, ?, ?)
     `;
   con.query(
     sql,
-    [req.body.title, req.body.price, req.body.cat_id],
+    [req.body.title, req.body.price, req.body.cat_id, req.body.image],
     (err, result) => {
       if (err) throw err;
       res.send(result);
@@ -45,26 +46,12 @@ app.post("/server/movies", (req, res) => {
   );
 });
 
-// app.post("/server/bills", (req, res) => {
-//   const sql = `
-//     INSERT INTO bills (invoice, kwh, total, consumer_id)
-//     VALUES (?, ?, ?, ?)
-//     `;
-//   con.query(
-//     sql,
-//     [req.body.invoice, req.body.kwh, req.body.total, req.body.consumer_id],
-//     (err, result) => {
-//       if (err) throw err;
-//       res.send(result);
-//     }
-//   );
-// });
-
 //READ
 app.get("/server/cats", (req, res) => {
   const sql = `
     SELECT *
     FROM cats
+    ORDER BY id DESC
     `;
   con.query(sql, (err, result) => {
     if (err) throw err;
@@ -147,12 +134,18 @@ app.put("/server/cats/:id", (req, res) => {
 app.put("/server/movies/:id", (req, res) => {
   const sql = `
     UPDATE movies
-    SET title = ?, price = ?, cat_id=?
+    SET title = ?, price = ?, cat_id=?, image=?
     WHERE id = ?
     `;
   con.query(
     sql,
-    [req.body.title, req.body.price, req.body.cat_id, req.params.id],
+    [
+      req.body.title,
+      req.body.price,
+      req.body.cat_id,
+      req.body.image,
+      req.params.id,
+    ],
     (err, result) => {
       if (err) throw err;
       res.send(result);

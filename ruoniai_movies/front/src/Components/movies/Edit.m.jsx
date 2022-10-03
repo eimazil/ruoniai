@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { useContext } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import Movies from "../../Contexts/Movies";
+import getBase64 from "../../Functions/getBase64";
 
 function Edit() {
   const { modalData, setModalData, setEditData, categories } =
@@ -9,15 +8,30 @@ function Edit() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [categorie, setCategorie] = useState("0");
+  const fileInput = useRef();
+
+  const [photoPrint, setPhotoPrint] = useState(null);
 
   const save = () => {
     setEditData({
       title,
-      price,
-      categorie_id: parseFloat(categorie),
+      price: parseFloat(price),
+      cat_id: parseInt(categorie),
+      image: photoPrint,
       id: modalData.id,
     });
     setModalData(null);
+  };
+
+  const closeModal = () => {
+    setModalData(null);
+    setPhotoPrint(null);
+  };
+
+  const doPhoto = () => {
+    getBase64(fileInput.current.files[0])
+      .then((photo) => setPhotoPrint(photo))
+      .catch((_) => {});
   };
 
   useEffect(() => {
@@ -40,7 +54,7 @@ function Edit() {
           <div className="modal-header">
             <h5 className="modal-title">Edit Supplier</h5>
             <button
-              onClick={() => setModalData(null)}
+              onClick={closeModal}
               type="button"
               className="btn-close"
             ></button>
@@ -83,13 +97,29 @@ function Edit() {
                       </option>
                     ))}
                   </select>
+                  <div className="form-group">
+                    <label>Choose file</label>
+                    <input
+                      ref={fileInput}
+                      type="file"
+                      className="form-control"
+                      onChange={doPhoto}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    {photoPrint ? (
+                      <div className="img-bin">
+                        <img src={photoPrint} alt="uploaded-img" />
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div className="modal-footer">
             <button
-              onClick={() => setModalData(null)}
+              onClick={closeModal}
               type="button"
               className="btn btn-secondary"
             >
