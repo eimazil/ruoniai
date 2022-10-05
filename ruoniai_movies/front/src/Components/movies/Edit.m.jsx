@@ -11,6 +11,9 @@ function Edit() {
   const fileInput = useRef();
 
   const [photoPrint, setPhotoPrint] = useState(null);
+  const [deletePhoto, setDeletePhoto] = useState(false);
+
+  console.log(deletePhoto);
 
   const save = () => {
     setEditData({
@@ -19,13 +22,14 @@ function Edit() {
       cat_id: parseInt(categorie),
       image: photoPrint,
       id: modalData.id,
+      deletePhoto: deletePhoto ? 1 : 0,
     });
     setModalData(null);
   };
 
   const closeModal = () => {
     setModalData(null);
-    setPhotoPrint(null);
+    setDeletePhoto(false);
   };
 
   const doPhoto = () => {
@@ -40,7 +44,9 @@ function Edit() {
     }
     setTitle(modalData.title);
     setPrice(modalData.price);
-    setCategorie(modalData.categorie_id);
+    setCategorie(modalData.cat_id);
+    setPhotoPrint(modalData.image);
+    setDeletePhoto(false);
   }, [modalData]);
 
   if (modalData === null) {
@@ -106,10 +112,28 @@ function Edit() {
                       onChange={doPhoto}
                     />
                   </div>
-                  <div className="mb-3">
+                  <div>
                     {photoPrint ? (
-                      <div className="img-bin">
-                        <img src={photoPrint} alt="uploaded-img" />
+                      <div
+                        className="movie-img-container"
+                        style={{
+                          display: deletePhoto === true ? "none" : "block",
+                        }}
+                      >
+                        <img
+                          className="movies-img edit-img"
+                          src={photoPrint}
+                          alt="uploaded-img"
+                        />
+                        <div
+                          onClick={() => setDeletePhoto((d) => true)}
+                          className="btn-close delete-btn"
+                        ></div>
+                        {/* <input
+                          type="checkbox"
+                          checked={deletePhoto}
+                          onChange={() => setDeletePhoto((d) => !d)}
+                        /> */}
                       </div>
                     ) : null}
                   </div>

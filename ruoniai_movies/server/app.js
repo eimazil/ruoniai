@@ -71,29 +71,19 @@ app.get("/server/movies", (req, res) => {
     res.send(result);
   });
 });
-// app.get("/server/consumers", (req, res) => {
-//   const sql = `
-//     SELECT *
-//     FROM electricity_consumers
-//     `;
-//   con.query(sql, (err, result) => {
-//     if (err) throw err;
-//     res.send(result);
-//   });
-// });
 
-// app.get("/server/all", (req, res) => {
-//   const sql = `
-//     SELECT c.*, s.id AS sid, title, price
-//     FROM electricity_supplier AS s
-//     INNER JOIN electricity_consumers AS c
-//     ON c.supplier_id = s.id
-//     `;
-//   con.query(sql, (err, result) => {
-//     if (err) throw err;
-//     res.send(result);
-//   });
-// });
+app.get("/home/movies", (req, res) => {
+  const sql = `
+    SELECT m.*, cat_title
+    FROM movies AS m
+    INNER JOIN cats AS c
+    ON m.cat_id = c.id
+    `;
+  con.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
 
 //DELETE
 app.delete("/server/cats/:id", (req, res) => {
@@ -131,71 +121,61 @@ app.put("/server/cats/:id", (req, res) => {
   });
 });
 
-app.put("/server/movies/:id", (req, res) => {
+app.put("/home/movies/:id", (req, res) => {
   const sql = `
     UPDATE movies
-    SET title = ?, price = ?, cat_id=?, image=?
+    SET 
+    rating_sum = rating_sum + ?, 
+    rating_count = rating_count + 1, 
+    rating = rating_sum / rating_count
     WHERE id = ?
     `;
-  con.query(
-    sql,
-    [
+  con.query(sql, [req.body.rate, req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// Delete photo
+
+app.put("/server/movies/:id", (req, res) => {
+  let sql;
+  let r;
+
+  if (req.body.deletePhoto) {
+    sql = `
+        UPDATE movies
+        SET title = ?, price = ?, cat_id = ?, image = null
+        WHERE id = ?
+        `;
+    r = [req.body.title, req.body.price, req.body.cat_id, req.params.id];
+  } else if (req.body.image) {
+    sql = `
+        UPDATE movies
+        SET title = ?, price = ?, cat_id = ?, image = ?
+        WHERE id = ?
+        `;
+    r = [
       req.body.title,
       req.body.price,
       req.body.cat_id,
       req.body.image,
       req.params.id,
-    ],
-    (err, result) => {
-      if (err) throw err;
-      res.send(result);
-    }
-  );
+    ];
+  } else {
+    sql = `
+        UPDATE movies
+        SET title = ?, price = ?, cat_id = ?
+        WHERE id = ?
+        `;
+    r = [req.body.title, req.body.price, req.body.cat_id, req.params.id];
+  }
+
+  con.query(sql, r, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
 });
-
-// app.put("/server/consumers/:id", (req, res) => {
-//   const sql = `
-//     UPDATE electricity_consumers
-//     SET name = ?, surname = ?, counter_number = ?, supplier_id = ?
-//     WHERE id = ?
-//     `;
-//   con.query(
-//     sql,
-//     [
-//       req.body.name,
-//       req.body.surname,
-//       req.body.counter_number,
-//       req.body.supplier_id,
-//       req.params.id,
-//     ],
-//     (err, result) => {
-//       if (err) throw err;
-//       res.send(result);
-//     }
-//   );
-// });
-
-// app.delete("/server/consumers/:id", (req, res) => {
-//   const sql = `
-//     DELETE FROM electricity_consumers
-//     WHERE id = ?
-//     `;
-//   con.query(sql, [req.params.id], (err, result) => {
-//     if (err) throw err;
-//     res.send(result);
-//   });
-// });
-
-// app.delete("/server/bills/:id", (req, res) => {
-//   const sql = `
-//     DELETE FROM bills
-//     WHERE id = ?
-//     `;
-//   con.query(sql, [req.params.id], (err, result) => {
-//     if (err) throw err;
-//     res.send(result);
-//   });
-// });
 
 app.listen(port, () => {
   console.log(`Filmų serveris veikia ${port} porte!`);

@@ -1,5 +1,4 @@
 @import "~bootstrap/scss/bootstrap";
-
 .modal {
   display: block;
   background-color: #0000005f;
@@ -12,31 +11,97 @@
   padding: 10px;
 }
 
-.suppliers {
+.movie-img-container {
   margin-top: 20px;
+  position: relative;
+  width: 150px;
 }
 
-.line-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+.delete-btn {
+  background-color: crimson;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translatey(-50%);
 }
 
-.info-container {
+.movies-line-container {
   display: flex;
-  gap: 10px;
+  gap: 50px;
+  margin-bottom: 50px;
 }
 
 .buttons-container {
+  align-self: flex-start;
   display: flex;
   gap: 10px;
 }
 
-.img-bin {
-  margin: 10px;
-  img {
-    height: 150px;
-    width: auto;
-  }
+.no-image {
+  padding: 5px;
+  border: 3px solid red;
+}
+
+.display-info-container {
+  display: flex;
+  gap: 50px;
+}
+
+// ADMIN MOVIES CREATE
+
+.movies-no-img {
+  width: 150px;
+}
+.movies-img {
+  width: 150px;
+}
+
+.movies-info-container,
+.line-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.line-container {
+  margin-bottom: 20px;
+}
+
+.movies-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// USER INTERFACE
+
+.right-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.left-container {
+  width: 300px;
+}
+
+.display-img {
+  width: 300px;
+}
+
+.display-line-container {
+  padding: 10px 0;
+  border-bottom: 2px dashed black;
+  border-bottom: 2px dashed black;
+}
+.right-container-left,
+.right-container-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.display-category {
+  cursor: pointer;
 }
