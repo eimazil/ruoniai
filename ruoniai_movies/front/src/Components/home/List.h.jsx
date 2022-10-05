@@ -5,6 +5,7 @@ import Line from "./Line.h";
 function List() {
   const { movies, setMovies } = useContext(HomeContext);
   const [sortBy, setSortBy] = useState("default");
+  const [stats, setStats] = useState({ movieCount: null });
 
   const sortData = [
     { v: "default", t: "Default soart" },
@@ -33,9 +34,16 @@ function List() {
     }
   }, [sortBy, setMovies]);
 
+  useEffect(() => {
+    if (movies === null) {
+      return;
+    }
+    setStats((s) => ({ ...s, movieCount: movies.length }));
+  }, [movies]);
+
   return (
     <div className="card m-4">
-      <h5 className="card-header"> Movies list</h5>
+      <h5 className="card-header"> Movies list ({stats.movieCount})</h5>
       <div className="card-body">
         <div className="mb-3">
           <select
