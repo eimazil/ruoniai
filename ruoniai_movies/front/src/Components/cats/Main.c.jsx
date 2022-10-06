@@ -4,6 +4,7 @@ import Create from "./Create.c";
 import axios from "axios";
 import List from "./List.c";
 import Edit from "./Edit.c";
+import { authConfig } from "../../Functions/auth";
 
 function Main() {
   const [createData, setCreateData] = useState(null);
@@ -16,7 +17,7 @@ function Main() {
 
   // READ for list
   useEffect(() => {
-    axios.get("http://localhost:3003/server/cats").then((res) => {
+    axios.get("http://localhost:3003/server/cats", authConfig()).then((res) => {
       setCategories(res.data);
     });
   }, [lastUpdate]);
@@ -37,7 +38,10 @@ function Main() {
       return;
     }
     axios
-      .delete("http://localhost:3003/server/cats/" + deleteData.id)
+      .delete(
+        "http://localhost:3003/server/cats/" + deleteData.id,
+        authConfig()
+      )
       .then((res) => {
         setLastUpdate(Date.now());
       });
@@ -48,7 +52,11 @@ function Main() {
       return;
     }
     axios
-      .put("http://localhost:3003/server/cats/" + editData.id, editData)
+      .put(
+        "http://localhost:3003/server/cats/" + editData.id,
+        editData,
+        authConfig()
+      )
       .then((res) => {
         setLastUpdate(Date.now());
       });

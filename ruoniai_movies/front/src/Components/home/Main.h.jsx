@@ -2,20 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import List from "./List.h";
 import HomeContext from "../../Contexts/Home";
+import { authConfig } from "../../Functions/auth";
 
 function Main() {
   const [movies, setMovies] = useState(null);
   const [rateData, setRateData] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(Date.now());
 
-  console.log(movies);
-
   const filterOn = useRef(false);
   const filterWhat = useRef(null);
 
   // READ for list
   useEffect(() => {
-    axios.get("http://localhost:3003/home/movies").then((res) => {
+    axios.get("http://localhost:3003/home/movies", authConfig()).then((res) => {
       if (filterOn.current) {
         setMovies(
           res.data.map((d, i) =>
@@ -35,7 +34,11 @@ function Main() {
       return;
     }
     axios
-      .put("http://localhost:3003/home/movies/" + rateData.id, rateData)
+      .put(
+        "http://localhost:3003/home/movies/" + rateData.id,
+        rateData,
+        authConfig()
+      )
       .then((res) => {
         setLastUpdate(Date.now());
       });

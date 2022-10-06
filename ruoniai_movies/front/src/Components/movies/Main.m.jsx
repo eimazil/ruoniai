@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authConfig } from "../../Functions/auth";
 import Movies from "../../Contexts/Movies";
 import Create from "./Create.m";
 import axios from "axios";
@@ -17,15 +18,17 @@ function Main() {
 
   // READ for select
   useEffect(() => {
-    axios.get("http://localhost:3003/server/cats").then((res) => {
+    axios.get("http://localhost:3003/server/cats", authConfig()).then((res) => {
       setCategories(res.data);
     });
   }, []);
   // READ for list
   useEffect(() => {
-    axios.get("http://localhost:3003/server/movies").then((res) => {
-      setMovies(res.data);
-    });
+    axios
+      .get("http://localhost:3003/server/movies", authConfig())
+      .then((res) => {
+        setMovies(res.data);
+      });
   }, [lastUpdate]);
 
   useEffect(() => {
@@ -33,7 +36,7 @@ function Main() {
       return;
     }
     axios
-      .post("http://localhost:3003/server/movies", createData)
+      .post("http://localhost:3003/server/movies", createData, authConfig())
       .then((res) => {
         setLastUpdate(Date.now());
       });
@@ -44,7 +47,10 @@ function Main() {
       return;
     }
     axios
-      .delete("http://localhost:3003/server/movies/" + deleteData.id)
+      .delete(
+        "http://localhost:3003/server/movies/" + deleteData.id,
+        authConfig()
+      )
       .then((res) => {
         setLastUpdate(Date.now());
       });
@@ -55,7 +61,11 @@ function Main() {
       return;
     }
     axios
-      .put("http://localhost:3003/server/movies/" + editData.id, editData)
+      .put(
+        "http://localhost:3003/server/movies/" + editData.id,
+        editData,
+        authConfig()
+      )
       .then((res) => {
         setLastUpdate(Date.now());
       });
