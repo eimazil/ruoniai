@@ -70,39 +70,26 @@ app.use(doAuth);
 
 // AUTH
 app.get("/login-check", (req, res) => {
-  let sql;
-  let requests;
-  if (req.query.role === "admin") {
-    sql = `
-        SELECT
-        name
-        FROM users
-        WHERE session = ? AND role = 10
+  const sql = `
+         SELECT
+         name, role
+         FROM users
+         WHERE session = ?
         `;
-    requests = [req.headers["authorization"] || "", req.query.role];
-  } else if (req.query.role === "user") {
-    sql = `
-        SELECT
-        name
-        FROM users
-        WHERE session = ? AND (role = 10 OR role =1)
-        `;
-    requests = [req.headers["authorization"] || "", req.query.role];
-  } else {
-    sql = `
-        SELECT
-        name
-        FROM users
-        WHERE session = ?
-        `;
-    requests = [req.headers["authorization"] || ""];
-  }
-  con.query(sql, requests, (err, result) => {
+  con.query(sql, [req.headers["authorization"] || ""], (err, result) => {
     if (err) throw err;
     if (!result.length) {
-      res.send({ msg: "error" });
+      res.send({ msg: "error", status: 1 }); // user not logged
     } else {
-      res.send({ msg: "ok" });
+      if ("admin" === req.query.role) {
+        if (result[0].role !== 10) {
+          res.send({ msg: "error", status: 2 }); // not an admin
+        } else {
+          res.send({ msg: "ok", status: 3 }); // is admin
+        }
+      } else {
+        res.send({ msg: "ok", status: 4 }); // is user
+      }
     }
   });
 });
@@ -129,7 +116,7 @@ app.post("/login", (req, res) => {
 //CREATE
 app.post("/server/cats", (req, res) => {
   const sql = `
-    INSERT INTO cats (cat_title)
+    INSERT INTO cats (title)
     VALUES (?)
     `;
   con.query(sql, [req.body.title], (err, result) => {
@@ -137,7 +124,6 @@ app.post("/server/cats", (req, res) => {
     res.send(result);
   });
 });
-
 app.post("/server/movies", (req, res) => {
   const sql = `
     INSERT INTO movies (title, price, cat_id, image)
@@ -153,10 +139,10 @@ app.post("/server/movies", (req, res) => {
   );
 });
 
-//READ
+// READ (all)
 app.get("/server/cats", (req, res) => {
   const sql = `
-    SELECT *
+    SELECT id, cat_title
     FROM cats
     ORDER BY id DESC
     `;
@@ -165,26 +151,25 @@ app.get("/server/cats", (req, res) => {
     res.send(result);
   });
 });
-
+// READ (all)
 app.get("/server/movies", (req, res) => {
   const sql = `
-    SELECT m.*, cat_title
-    FROM movies AS m
-    INNER JOIN cats AS c
-    ON m.cat_id = c.id
+    SELECT *
+    FROM movies
+    ORDER BY id DESC
     `;
   con.query(sql, (err, result) => {
     if (err) throw err;
     res.send(result);
   });
 });
-
 app.get("/home/movies", (req, res) => {
   const sql = `
-    SELECT m.*, cat_title
+    SELECT m.*, cat_title,  c.id AS cid
     FROM movies AS m
     INNER JOIN cats AS c
     ON m.cat_id = c.id
+    ORDER BY m.title
     `;
   con.query(sql, (err, result) => {
     if (err) throw err;
@@ -203,7 +188,6 @@ app.delete("/server/cats/:id", (req, res) => {
     res.send(result);
   });
 });
-
 app.delete("/server/movies/:id", (req, res) => {
   const sql = `
     DELETE FROM movies
@@ -215,7 +199,7 @@ app.delete("/server/movies/:id", (req, res) => {
   });
 });
 
-// //EDIT
+//EDIT
 app.put("/server/cats/:id", (req, res) => {
   const sql = `
     UPDATE cats
@@ -227,7 +211,6 @@ app.put("/server/cats/:id", (req, res) => {
     res.send(result);
   });
 });
-
 app.put("/home/movies/:id", (req, res) => {
   const sql = `
     UPDATE movies
@@ -242,13 +225,9 @@ app.put("/home/movies/:id", (req, res) => {
     res.send(result);
   });
 });
-
-// Delete photo
-
 app.put("/server/movies/:id", (req, res) => {
   let sql;
   let r;
-
   if (req.body.deletePhoto) {
     sql = `
         UPDATE movies
@@ -277,7 +256,6 @@ app.put("/server/movies/:id", (req, res) => {
         `;
     r = [req.body.title, req.body.price, req.body.cat_id, req.params.id];
   }
-
   con.query(sql, r, (err, result) => {
     if (err) throw err;
     res.send(result);
@@ -285,5 +263,5 @@ app.put("/server/movies/:id", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Filmų serveris veikia ${port} porte!`);
+  console.log(`Filmus rodo per ${port} portą!`);
 });

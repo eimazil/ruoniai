@@ -6,18 +6,20 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
 import Nav from "./Components/Nav";
 import Home from "./Components/home/Main.h";
 import MainCat from "./Components/cats/Main.c";
 import MainMovies from "./Components/movies/Main.m";
 import { login, logout, authConfig } from "./Functions/auth";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
+  const [roleChange, setRoleChange] = useState(Date.now());
+
   return (
     <BrowserRouter>
-      <Nav />
+      <ShowNav roleChange={roleChange} />
       <Routes>
         <Route
           path="/"
@@ -27,8 +29,14 @@ function App() {
             </RequireAuth>
           }
         ></Route>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/logout" element={<LogoutPage />} />
+        <Route
+          path="/login"
+          element={<LoginPage setRoleChange={setRoleChange} />}
+        />
+        <Route
+          path="/logout"
+          element={<LogoutPage setRoleChange={setRoleChange} />}
+        />
         <Route
           path="/categories"
           element={
@@ -50,6 +58,18 @@ function App() {
   );
 }
 
+function ShowNav({ roleChange }) {
+  const [status, setStatus] = useState(1);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3003/login-check?role=admin", authConfig())
+      .then((res) => {
+        setStatus(res.data.status);
+      });
+  }, [roleChange]);
+  return <Nav status={status} />;
+}
+
 function RequireAuth({ children, role }) {
   const [view, setView] = useState(<h2>Please wait...</h2>);
 
@@ -59,6 +79,8 @@ function RequireAuth({ children, role }) {
       .then((res) => {
         if ("ok" === res.data.msg) {
           setView(children);
+        } else if (res.data.status === 2) {
+          setView(<h2>Unauthorize...</h2>);
         } else {
           setView(<Navigate to="/login" replace />);
         }
@@ -68,7 +90,7 @@ function RequireAuth({ children, role }) {
   return view;
 }
 
-function LoginPage() {
+function LoginPage({ setRoleChange }) {
   const navigate = useNavigate();
 
   const [user, setUser] = useState("");
@@ -76,7 +98,7 @@ function LoginPage() {
 
   const doLogin = () => {
     axios.post("http://localhost:3003/login", { user, pass }).then((res) => {
-      console.log(res.data);
+      setRoleChange(Date.now());
       if ("ok" === res.data.msg) {
         login(res.data.key);
         navigate("/", { replace: true });
@@ -106,8 +128,12 @@ function LoginPage() {
   );
 }
 
-function LogoutPage() {
-  useEffect(() => logout(), []);
+function LogoutPage({ setRoleChange }) {
+  useEffect(() => {
+    logout();
+    setRoleChange(Date.now());
+  }, []);
+
   return <Navigate to="/login" replace />;
 }
 
