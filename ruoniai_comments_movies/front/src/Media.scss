@@ -1,0 +1,27 @@
+@import "~bootstrap/scss/bootstrap";
+
+@media (max-width: 768px) {
+  .display-info-container {
+    flex-direction: column;
+  }
+  .left-container {
+    align-self: center;
+    width: inherit;
+  }
+}
+
+@media (max-width: 576px) {
+  .movies-line-container {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 400px) {
+  .display-img {
+    width: 200px;
+  }
+  .movies-info-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
